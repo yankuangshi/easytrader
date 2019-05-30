@@ -1,0 +1,13 @@
+{
+  "prefix": "",
+  "balance_url": "http://mncg.10jqka.com.cn/cgiwt/query/querydiv/?ajaxdatatype=html",
+  "position_url": "http://mncg.10jqka.com.cn/cgiwt/delegate/qryChicang",
+  "today_entrusts_url": "http://mncg.10jqka.com.cn/cgiwt/delegate/qryDelegated",
+  "today_trades_url": "http://mncg.10jqka.com.cn/cgiwt/delegate/qryChengjiao",
+  "query_price_url": "http://mncg.10jqka.com.cn/cgiwt/delegate/qrystock",
+  "trade_url": "http://mncg.10jqka.com.cn/cgiwt/delegate/tradestock",
+  "market_trade_url": "http://mncg.10jqka.com.cn/cgiwt/delegate/tradeStockSjwt",
+  "cancel_entrust_url": "http://mncg.10jqka.com.cn/cgiwt/delegate/cancelDelegated",
+  "history_url": "http://mncg.10jqka.com.cn/cgiwt/query/qrycj",
+  "capital_flow_url": "http://mncg.10jqka.com.cn/cgiwt/query/qryzjmx"
+}

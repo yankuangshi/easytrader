@@ -8,6 +8,7 @@ from .log import log
 from .ricequant_follower import RiceQuantFollower
 from .xq_follower import XueQiuFollower
 from .xqtrader import XueQiuTrader
+from .tonghuashuntrader import TongHuaShunTrader
 
 if six.PY2:
     raise TypeError("不支持 Python2，请升级 Python3")
@@ -30,6 +31,8 @@ def use(broker, debug=True, **kwargs):
         log.setLevel(logging.INFO)
     if broker.lower() in ["xq", "雪球"]:
         return XueQiuTrader(**kwargs)
+    if broker.lower() in ["ths_moni", "同花顺模拟"]:
+        return TongHuaShunTrader(**kwargs)
     if broker.lower() in ["yh_client", "银河客户端"]:
         from .yh_clienttrader import YHClientTrader
 
