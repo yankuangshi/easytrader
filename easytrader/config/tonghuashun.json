@@ -9,5 +9,6 @@
   "market_trade_url": "http://mncg.10jqka.com.cn/cgiwt/delegate/tradeStockSjwt",
   "cancel_entrust_url": "http://mncg.10jqka.com.cn/cgiwt/delegate/cancelDelegated",
   "history_url": "http://mncg.10jqka.com.cn/cgiwt/query/qrycj",
-  "capital_flow_url": "http://mncg.10jqka.com.cn/cgiwt/query/qryzjmx"
+  "capital_flow_url": "http://mncg.10jqka.com.cn/cgiwt/query/qryzjmx",
+  "today_recall_url": "http://mncg.10jqka.com.cn/cgiwt/delegate/qryChedan"
 }

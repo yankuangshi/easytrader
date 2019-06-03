@@ -27,6 +27,9 @@ class TongHuaShunTrader(webtrader.WebTrader):
         "X-Requested-With": "XMLHttpRequest"
     }
 
+    # HTTP RESPONSE
+    _HTTP_RESPONSE_OK = 0
+
     # Position grid
     _POSITION_GRID_STOCK_CODE = "d_2102"  # 证券代码
     _POSITION_GRID_STOCK_NAME = "d_2103"  # 证券名称
@@ -225,6 +228,43 @@ class TongHuaShunTrader(webtrader.WebTrader):
             )
         return trades_list
 
+    @property
+    def today_recall(self):
+        return self._get_today_recall()
+
+    def _get_today_recall(self):
+        """
+        获取当日可撤单的委托
+        :return:
+        """
+        url = self.config["today_recall_url"]
+        payload = {"gdzh": self.account_config["sh_gdzh"], "mkcode": "2"}
+        r = self._post(url, payload)
+        resp_json = json.loads(r)
+        if resp_json["errorcode"] != self._HTTP_RESPONSE_OK:
+            log.warning("查询出错")
+            return None
+        ths_entrusts = resp_json["result"]["list"]
+        entrust_recall = []
+        for e in ths_entrusts:
+            entrust_recall.append(
+                {
+                    "stock_code": e[self._TODAY_ENTRUSTS_GRID_STOCK_CODE],
+                    "stock_name": e[self._TODAY_ENTRUSTS_GRID_STOCK_NAME],
+                    "status": e[self._TODAY_ENTRUSTS_GRID_STATUS],
+                    "shares": e[self._TODAY_ENTRUSTS_GRID_SHARES],
+                    "tx_shares": e[self._TODAY_ENTRUSTS_GRID_TX_SHARES],
+                    "price": e[self._TODAY_ENTRUSTS_GRID_PRICE],
+                    "tx_price": e[self._TODAY_ENTRUSTS_GRID_TX_PRICE],
+                    "direction": e[self._TODAY_ENTRUSTS_GRID_DIRECTION],
+                    "time": e[self._TODAY_ENTRUSTS_GRID_TIME],
+                    "date": e[self._TODAY_ENTRUSTS_GRID_DATE],
+                    "contract_no": e[self._TODAY_ENTRUSTS_GRID_CONTRACT_NO],
+                    "mode": e[self._TODAY_ENTRUSTS_GRID_MODE]
+                }
+            )
+        return entrust_recall
+
     def buy(self, stock_code, order_type="limit", price=0, amount=0):
         """
         委托买入股票
@@ -248,6 +288,21 @@ class TongHuaShunTrader(webtrader.WebTrader):
         :return:
         """
         return self._trade(stock_code, order_type, price, amount, "sell")
+
+    def cancel_entrust(self, contract_no, date):
+        """
+        撤销委托单
+        :param contract_no: 委托单合同编号
+        :param date: 委托日期 格式 yyyyMMdd 如：20190530
+        :return:
+        """
+        url = self.config["cancel_entrust_url"]
+        payload = {"htbh": contract_no, "wtrq": date}
+        r = self._post(url, payload)
+        resp_json = json.loads(r)
+        if resp_json["errorcode"] == self._HTTP_RESPONSE_OK:
+            return "撤单成功"
+
 
     def _trade(self, stock_code, order_type, price, amount, entrust_bs="buy"):
         """
@@ -286,7 +341,7 @@ class TongHuaShunTrader(webtrader.WebTrader):
             }
             r = self._post(url, payload)
             resp_json = json.loads(r)
-            if resp_json["errorcode"] == 0:
+            if resp_json["errorcode"] == self._HTTP_RESPONSE_OK:
                 log.debug("下单成功")
                 data = resp_json["result"]["data"]
                 return {
@@ -309,7 +364,7 @@ class TongHuaShunTrader(webtrader.WebTrader):
             }
             r = self._post(url, payload)
             resp_json = json.loads(r)
-            if resp_json["errorcode"] == 0:
+            if resp_json["errorcode"] == self._HTTP_RESPONSE_OK:
                 data = resp_json["result"]["data"]
                 log.debug("下单成功")
                 return {
@@ -330,7 +385,7 @@ class TongHuaShunTrader(webtrader.WebTrader):
         payload = {"type": self._TRADING_TYPE_BUY, "stockcode": stock_code}
         r = self._post(url, payload)
         resp_json = json.loads(r)
-        if resp_json["errorcode"] == 0:
+        if resp_json["errorcode"] == self._HTTP_RESPONSE_OK:
             data = resp_json["result"]["data"]
             up_limit = data["st_up_limit"]
             down_limit = data["st_down_limit"]
